@@ -99,7 +99,7 @@
             desc: '''
                   Setting this bit will disable the AES cipher core module. If set, then commands will
                   bypass the AES cipher core, but still move through the logical flow of CSRNG.
-                  This mode is primarily for debug purposes.
+                  This mode is for debug purposes only.
                   '''
         },
         {
@@ -199,10 +199,10 @@
           name: "GENBITS",
           desc: '''
                 Reading this register will get the generated bits that were requested with
-                the generate request. This register must be four times for each request
-                number made. For example, a application command generate request with
-                a `creq` value of 4 requires this register to be read 16 times to get all
-                of the data out of the FIFO path.
+                the generate request. This register must read four times for each request
+                made. For example, a application command generate request with a `creq` 
+                value of 4 requires this register to be read 16 times to get all of the 
+                data out of the FIFO path.
                 '''
         }
       ]
