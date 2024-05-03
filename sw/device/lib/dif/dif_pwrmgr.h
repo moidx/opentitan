@@ -194,6 +194,10 @@ typedef struct dif_pwrmgr_wakeup_reason {
   dif_pwrmgr_request_sources_t request_sources;
 } dif_pwrmgr_wakeup_reason_t;
 
+OT_WARN_UNUSED_RESULT
+dif_result_t dif_pwrmgr_alert_clear(const dif_pwrmgr_t *pwrmgr,
+                                    dif_pwrmgr_alert_t alert);
+
 /**
  * Enables or disables low power state.
  *

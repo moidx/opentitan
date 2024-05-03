@@ -188,6 +188,31 @@ static void aes_read_multireg(const dif_aes_t *aes, uint32_t *data,
   }
 }
 
+dif_result_t dif_aes_alert_clear(const dif_aes_t *aes, dif_aes_alert_t alert) {
+  if (aes == NULL) {
+    return kDifBadArg;
+  }
+
+  bitfield_bit32_index_t alert_idx;
+  switch (alert) {
+    case kDifAesAlertRecovCtrlUpdateErr:
+      alert_idx = AES_ALERT_TEST_RECOV_CTRL_UPDATE_ERR_BIT;
+      break;
+    case kDifAesAlertFatalFault:
+      alert_idx = AES_ALERT_TEST_FATAL_FAULT_BIT;
+      break;
+    default:
+      return kDifBadArg;
+  }
+
+  uint32_t reg = mmio_region_read32(aes->base_addr, AES_ALERT_TEST_REG_OFFSET);
+  reg = bitfield_bit32_write(reg, alert_idx, false);
+  mmio_region_write32(aes->base_addr, (ptrdiff_t)AES_ALERT_TEST_REG_OFFSET,
+                      reg);
+
+  return kDifOk;
+}
+
 dif_result_t dif_aes_reset(const dif_aes_t *aes) {
   if (aes == NULL) {
     return kDifBadArg;

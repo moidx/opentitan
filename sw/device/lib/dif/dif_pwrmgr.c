@@ -217,6 +217,30 @@ static bool request_sources_is_locked(const dif_pwrmgr_t *pwrmgr,
   return !bitfield_bit32_read(reg_val, reg_info.write_enable_bit_index);
 }
 
+dif_result_t dif_pwrmgr_alert_clear(const dif_pwrmgr_t *pwrmgr,
+                                    dif_pwrmgr_alert_t alert) {
+  if (pwrmgr == NULL) {
+    return kDifBadArg;
+  }
+
+  bitfield_bit32_index_t alert_idx;
+  switch (alert) {
+    case kDifPwrmgrAlertFatalFault:
+      alert_idx = PWRMGR_ALERT_TEST_FATAL_FAULT_BIT;
+      break;
+    default:
+      return kDifBadArg;
+  }
+
+  uint32_t reg =
+      mmio_region_read32(pwrmgr->base_addr, PWRMGR_ALERT_TEST_REG_OFFSET);
+  reg = bitfield_bit32_write(reg, alert_idx, false);
+  mmio_region_write32(pwrmgr->base_addr,
+                      (ptrdiff_t)PWRMGR_ALERT_TEST_REG_OFFSET, reg);
+
+  return kDifOk;
+}
+
 dif_result_t dif_pwrmgr_low_power_set_enabled(const dif_pwrmgr_t *pwrmgr,
                                               dif_toggle_t new_state,
                                               dif_toggle_t sync_state) {

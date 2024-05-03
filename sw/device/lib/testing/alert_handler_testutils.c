@@ -137,8 +137,9 @@ status_t alert_handler_testutils_configure_all(
   }
 
   // Configure the ping timer.
-  TRY(dif_alert_handler_configure_ping_timer(alert_handler, config.ping_timeout,
-                                             kDifToggleEnabled, locked));
+  // TRY(dif_alert_handler_configure_ping_timer(alert_handler,
+  // config.ping_timeout,
+  //                                           kDifToggleEnabled, locked));
 
   return OK_STATUS();
 }

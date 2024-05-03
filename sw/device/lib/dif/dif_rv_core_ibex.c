@@ -252,6 +252,27 @@ dif_result_t dif_rv_core_ibex_enable_nmi(const dif_rv_core_ibex_t *rv_core_ibex,
   return kDifOk;
 }
 
+dif_result_t dif_rv_core_ibex_nmi_disable(
+    const dif_rv_core_ibex_t *rv_core_ibex, dif_rv_core_ibex_nmi_source_t nmi) {
+  if (rv_core_ibex == NULL || nmi & ~(uint32_t)kDifRvCoreIbexNmiSourceAll) {
+    return kDifBadArg;
+  }
+  uint32_t reg = mmio_region_read32(rv_core_ibex->base_addr,
+                                    RV_CORE_IBEX_NMI_ENABLE_REG_OFFSET);
+
+  if ((nmi & kDifRvCoreIbexNmiSourceAlert) == kDifRvCoreIbexNmiSourceAlert) {
+    reg = bitfield_bit32_write(reg, RV_CORE_IBEX_NMI_ENABLE_ALERT_EN_BIT, 0);
+  }
+  if ((nmi & kDifRvCoreIbexNmiSourceWdog) == kDifRvCoreIbexNmiSourceWdog) {
+    reg = bitfield_bit32_write(reg, RV_CORE_IBEX_NMI_ENABLE_WDOG_EN_BIT, 0);
+  }
+
+  mmio_region_write32(rv_core_ibex->base_addr,
+                      RV_CORE_IBEX_NMI_ENABLE_REG_OFFSET, reg);
+
+  return kDifOk;
+}
+
 dif_result_t dif_rv_core_ibex_get_nmi_state(
     const dif_rv_core_ibex_t *rv_core_ibex,
     dif_rv_core_ibex_nmi_state_t *nmi_state) {

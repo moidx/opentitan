@@ -332,6 +332,9 @@ OT_WARN_UNUSED_RESULT
 dif_result_t dif_rv_core_ibex_enable_nmi(const dif_rv_core_ibex_t *rv_core_ibex,
                                          dif_rv_core_ibex_nmi_source_t nmi);
 
+OT_WARN_UNUSED_RESULT
+dif_result_t dif_rv_core_ibex_nmi_disable(
+    const dif_rv_core_ibex_t *rv_core_ibex, dif_rv_core_ibex_nmi_source_t nmi);
 /**
  * Read the NMI enable status and current event state.
  *
