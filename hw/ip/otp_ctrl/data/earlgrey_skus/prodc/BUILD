@@ -184,7 +184,7 @@ otp_json(
                 # Disable ROM_EXT recovery feature.
                 "OWNER_SW_CFG_ROM_EXT_BOOTSTRAP_EN": otp_hex(0x0),
                 # Disable SRAM readback for both ret-ram and main sram.
-                "OWNER_SW_CFG_ROM_SRAM_READBACK_EN": otp_hex(CONST.MUBI4_FALSE << 4 | CONST.MUBI4_FALSE),
+                "OWNER_SW_CFG_ROM_SRAM_READBACK_EN": otp_hex(CONST.MUBI4_TRUE << 4 | CONST.MUBI4_TRUE),
                 # TODO(#23411): The customer wants this to be HARDENED_TRUE
                 # for production chips.
                 "OWNER_SW_CFG_ROM_PRESERVE_RESET_REASON_EN": otp_hex(CONST.HARDENED_FALSE),

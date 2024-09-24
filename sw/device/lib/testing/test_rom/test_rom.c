@@ -13,6 +13,7 @@
 #include "sw/device/lib/dif/dif_pinmux.h"
 #include "sw/device/lib/dif/dif_rstmgr.h"
 #include "sw/device/lib/dif/dif_rv_core_ibex.h"
+#include "sw/device/lib/dif/dif_sram_ctrl.h"
 #include "sw/device/lib/dif/dif_uart.h"
 #include "sw/device/lib/runtime/hart.h"
 #include "sw/device/lib/runtime/log.h"
@@ -96,6 +97,20 @@ bool rom_test_main(void) {
   CSR_WRITE(CSR_REG_CPUCTRL, cpuctrl_csr);
 #endif
 
+  uint32_t sram_readback_en = abs_mmio_read32(
+      TOP_EARLGREY_OTP_CTRL_CORE_BASE_ADDR + OTP_CTRL_SW_CFG_WINDOW_REG_OFFSET +
+      OTP_CTRL_PARAM_OWNER_SW_CFG_ROM_SRAM_READBACK_EN_OFFSET);
+
+  dif_sram_ctrl_t sram_ctrl;
+  CHECK_DIF_OK(dif_sram_ctrl_init(
+      mmio_region_from_addr(TOP_EARLGREY_SRAM_CTRL_MAIN_REGS_BASE_ADDR),
+      &sram_ctrl));
+
+  // Enable readback setting based on OTP configuration. The first nibble
+  // corresponds to the SRAM MAIN controller.
+  CHECK_DIF_OK(dif_sram_ctrl_readback_set(
+      &sram_ctrl, dif_multi_bit_bool_to_toggle(sram_readback_en & 0xf)));
+
   // Initial sec_mmio, required by bootstrap and its dependencies.
   sec_mmio_init();
 
@@ -162,6 +177,16 @@ bool rom_test_main(void) {
   CHECK_DIF_OK(dif_rstmgr_reset_info_get(&rstmgr, &reset_reasons));
 
 #if !OT_IS_ENGLISH_BREAKFAST
+  dif_sram_ctrl_t sram_ctrl_ret;
+  CHECK_DIF_OK(dif_sram_ctrl_init(
+      mmio_region_from_addr(TOP_EARLGREY_SRAM_CTRL_RET_AON_REGS_BASE_ADDR),
+      &sram_ctrl_ret));
+
+  // Enable readback setting based on OTP configuration. The second nibble
+  // corresponds to the SRAM RET controller.
+  CHECK_DIF_OK(dif_sram_ctrl_readback_set(
+      &sram_ctrl_ret, dif_multi_bit_bool_to_toggle(sram_readback_en >> 4)));
+
   // Store the reset reason in retention RAM and clear the register.
   volatile retention_sram_t *ret_ram = retention_sram_get();
   ret_ram->creator.reset_reasons = reset_reasons;

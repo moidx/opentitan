@@ -44,6 +44,10 @@
                     value: "0xd1d1d1d1",
                 },
                 {
+                    name: "OWNER_SW_CFG_ROM_SRAM_READBACK_EN",
+                    value: "0x66",
+                },
+                {
                     name: "OWNER_SW_CFG_ROM_ALERT_CLASSIFICATION"
                     // Set the classifiactions to kAlertClassX.
                     // See `alert_class_t`

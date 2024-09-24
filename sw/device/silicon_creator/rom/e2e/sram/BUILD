@@ -35,6 +35,19 @@ otp_json(
     ],
 )
 
+otp_json(
+    name = "otp_json_readback_disable",
+    partitions = [
+        otp_partition(
+            name = "OWNER_SW_CFG",
+            items = {
+                # Turn readback on for both retram and sram.
+                "OWNER_SW_CFG_ROM_SRAM_READBACK_EN": otp_hex(CONST.MUBI4_FALSE << 4 | CONST.MUBI4_FALSE),
+            },
+        ),
+    ],
+)
+
 # OTP images that enable the watchdog.
 otp_image(
     name = "otp_img_readback_enable",
@@ -44,7 +57,7 @@ otp_image(
 
 _TESTS = {
     "default": {
-        "otp": None,
+        "otp": ":otp_img_readback_disable",
     },
     "enabled": {
         "otp": ":otp_img_readback_enable",
